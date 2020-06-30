@@ -76,7 +76,7 @@ class ProfilesController extends Controller
             // $image->save();
             // $imageArray = ['image' => $imagePath];
 
-            dd(Storage::disk('s3'));
+            dd(Storage::disk('s3')->put('images/profile', request('image')));
             $path = Storage::disk('s3')->put('images/profile', request('image'));
             //dd($path);
             $fullPath = Storage::disk('s3')->url( $path );
