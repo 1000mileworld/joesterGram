@@ -45,10 +45,12 @@ class PostsController extends Controller
         // $image->save();
 
         $path = Storage::disk('s3')->put('images/posts', request('image'));
+        dd($path);
+        
         $imagePath = Storage::disk('s3')->url( $path );
 
-        dd($imagePath);
-        
+        //dd($imagePath);
+
         $image = Image::make($imagePath)->fit(1200,1200);
 
         //only authenticated users can create stuff
