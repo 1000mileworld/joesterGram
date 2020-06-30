@@ -44,8 +44,9 @@ class PostsController extends Controller
         // $image = Image::make(public_path("storage/$imagePath"))->fit(1200,1200); //resize image
         // $image->save();
 
+        dd("before storing image");
         $path = Storage::disk('s3')->put('images/posts', request('image'));
-        dd($path);
+        //dd($path);
         
         $imagePath = Storage::disk('s3')->url( $path );
 
