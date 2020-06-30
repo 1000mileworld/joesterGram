@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Intervention\Image\Facades\Image;
 
+use Illuminate\Support\Facades\Storage;
+
 class ProfilesController extends Controller
 {
     public function index(User $user)
@@ -67,13 +69,21 @@ class ProfilesController extends Controller
         ]);
 
         if(request('image')) {
-            $imagePath = request('image')->store('profile', 'public'); //link uploaded image to publicly accessible storage
+            // if using local storage, need to run php artisan storage:link and edit image path in app/Profile.php to include '/storage/'
 
-            $image = Image::make(public_path("storage/$imagePath"))->fit(1000,1000); //resize image
+            // $imagePath = request('image')->store('profile', 'public'); //link uploaded image to publicly accessible storage
+            // $image = Image::make(public_path("storage/$imagePath"))->fit(1000,1000); //resize image
+            // $image->save();
+            // $imageArray = ['image' => $imagePath];
+
             
-            $image->save();
+            $path = Storage::disk('s3')->put('images/profile', request('image'));
+            $fullPath = Storage::disk('s3')->url( $path );
+            
+            $image = Image::make($fullPath)->fit(1000,1000);
+            //$image->save();
+            $imageArray = ['image' => $fullPath];;
 
-            $imageArray = ['image' => $imagePath];
         }
         
         auth()->user()->profile->update(array_merge(

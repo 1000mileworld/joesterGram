@@ -10,7 +10,9 @@ class Profile extends Model
 
     public function profileImage()
     {
-        $imagePath = ($this->image) ? '/storage/' . $this->image : '/img/blank user.svg';
+        //$imagePath = ($this->image) ? '/storage/' . $this->image : '/img/blank user.svg';
+        $imagePath = ($this->image) ? $this->image : '/img/blank user.svg'; //switched from local storage to s3
+
         return $imagePath;
     }
 

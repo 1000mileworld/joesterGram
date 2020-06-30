@@ -6,6 +6,8 @@ use App\Post;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
+use Illuminate\Support\Facades\Storage;
+
 class PostsController extends Controller
 {
     public function __construct() 
@@ -36,10 +38,15 @@ class PostsController extends Controller
             'image' => ['required', 'image'],
         ]);
 
-        $imagePath = request('image')->store('/uploads', 'public'); //link uploaded image to publicly accessible storage
+        //if using local storage, need to add '/storage/' to appropriate places in views (posts->index, show and profiles->index)
 
-        $image = Image::make(public_path("storage/$imagePath"))->fit(1200,1200); //resize image
-        $image->save();
+        // $imagePath = request('image')->store('/uploads', 'public'); //link uploaded image to publicly accessible storage
+        // $image = Image::make(public_path("storage/$imagePath"))->fit(1200,1200); //resize image
+        // $image->save();
+
+        $path = Storage::disk('s3')->put('images/posts', request('image'));
+        $imagePath = Storage::disk('s3')->url( $path );
+        $image = Image::make($imagePath)->fit(1200,1200);
 
         //only authenticated users can create stuff
         auth()->user()->posts()->create([
