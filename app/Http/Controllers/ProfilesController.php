@@ -70,6 +70,7 @@ class ProfilesController extends Controller
             $imagePath = request('image')->store('profile', 'public'); //link uploaded image to publicly accessible storage
 
             $image = Image::make(public_path("storage/$imagePath"))->fit(1000,1000); //resize image
+            
             $image->save();
 
             $imageArray = ['image' => $imagePath];
